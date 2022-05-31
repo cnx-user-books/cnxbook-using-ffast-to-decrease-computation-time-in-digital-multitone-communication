@@ -1,0 +1,123 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Fast Fourier Aliasing-based Sparse Transform</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52216</md:content-id>
+  <md:title>Fast Fourier Aliasing-based Sparse Transform</md:title>
+  <md:abstract>A brief description of the FFAST algorithm.</md:abstract>
+  <md:uuid>ecca41e3-246b-41da-b3ab-5594509fc34b</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>Fast Fourier Aliasing-based Sparse Transform</title>
+      <para id="id176309">Fast Fourier Aliasing-based Sparse Transform (FFAST) is a sparse FFT algorithm developed by Sameer Pawar and Kannan Ramchandran in May 2013 <link target-id="bid0"/>. We present a formulation of the algorithm that is specialized for our digital multitone scheme.</para>
+      <para id="id176319">FFAST consists of three modules: the downsampling module, the FFT module, and the peeling module. See <link target-id="uid1"/> for a diagram of this architecture.</para>
+      <figure id="uid1">
+        <media id="uid1_media" alt="">
+          <image mime-type="image/png" src="../../media/ffast_architecture.png" id="uid1_onlineimage" width="941"><!-- NOTE: attribute width changes image size online (pixels). original width is 941. --></image>
+          <image mime-type="application/postscript" for="pdf" src="../../media/ffast_architecture.eps" id="uid1_printimage" print-width="15.0cm">
+            <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+          </image>
+        </media>
+        <caption>FFAST Architecture</caption>
+      </figure>
+      <section id="uid2">
+        <title>Front End</title>
+        <para id="id176689">The downsampling module consists of three stages. In each stage <m:math overflow="scroll"><m:mi>i</m:mi></m:math>, the signal and a delayed version are both downsampled by a sampling coefficient, <m:math overflow="scroll"><m:mrow><m:msub><m:mi>n</m:mi><m:mi>i</m:mi></m:msub><m:mo>∈</m:mo><m:msub><m:mi mathvariant="double-struck">Z</m:mi><m:mo>+</m:mo></m:msub></m:mrow></m:math>. This introduces aliasing in the frequency domain, which will be a key component in the peeling module. It is necessary that the sampling coefficients <m:math overflow="scroll"><m:msub><m:mi>n</m:mi><m:mi>i</m:mi></m:msub></m:math> are coprime factors of the singal length <m:math overflow="scroll"><m:mi>N</m:mi></m:math>; that is, <m:math overflow="scroll"><m:mrow><m:msub><m:mi>n</m:mi><m:mn>0</m:mn></m:msub><m:mspace width="0.166667em"/><m:msub><m:mi>n</m:mi><m:mn>1</m:mn></m:msub><m:mspace width="0.166667em"/><m:msub><m:mi>n</m:mi><m:mn>2</m:mn></m:msub><m:mo>=</m:mo><m:mi>N</m:mi></m:mrow></m:math> where <m:math overflow="scroll"><m:msub><m:mi>n</m:mi><m:mn>0</m:mn></m:msub></m:math>, <m:math overflow="scroll"><m:msub><m:mi>n</m:mi><m:mn>1</m:mn></m:msub></m:math>, <m:math overflow="scroll"><m:msub><m:mi>n</m:mi><m:mn>2</m:mn></m:msub></m:math>, are all relatively prime.</para>
+        <para id="id176829">These smaller subsignals are passed to the FFT module, which computes the DFT of each subsignal. Any FFT algorithm may be used in this stage with the condition that it works for a general signal length <m:math overflow="scroll"><m:mi>N</m:mi></m:math>. The DFTs of the subsignals at stage <m:math overflow="scroll"><m:mi>i</m:mi></m:math> are then paired together. We denote such a pair as <m:math overflow="scroll"><m:mrow><m:msubsup><m:mover accent="true"><m:mi>y</m:mi><m:mo>→</m:mo></m:mover><m:mi>l</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>i</m:mi></m:mrow></m:msubsup><m:mo>=</m:mo><m:mrow><m:mo>(</m:mo><m:msub><m:mi>x</m:mi><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow><m:mo>,</m:mo><m:msub><m:mover accent="true"><m:mi>x</m:mi><m:mo>˜</m:mo></m:mover><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, where <m:math overflow="scroll"><m:mrow><m:msub><m:mi>x</m:mi><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:msub><m:mover accent="true"><m:mi>x</m:mi><m:mo>˜</m:mo></m:mover><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow></m:mrow></m:math> are the <m:math overflow="scroll"><m:msub><m:mi>l</m:mi><m:mrow><m:mi>t</m:mi><m:mi>h</m:mi></m:mrow></m:msub></m:math> values of the DFT of the normal and delayed subsignals of stage <m:math overflow="scroll"><m:mi>i</m:mi></m:math>, respectively.</para>
+      </section>
+      <section id="uid3">
+        <title>Back End</title>
+        <para id="id177189">The peeling module takes these smaller DFT pairs and backsolves a bipartite graph to obtain the DFT coefficients of the original signal. To understand the structure of this graph, recall that the aliasing caused by downsampling “mixes" frequency domain components. More precisely, the coefficients of the smaller DFTs are a linear combination of the original DFT coefficients. Consider a graph with two types of vertices: the smaller DFT pair coefficients <m:math overflow="scroll"><m:msubsup><m:mover accent="true"><m:mi>y</m:mi><m:mo>→</m:mo></m:mover><m:mi>l</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>i</m:mi></m:mrow></m:msubsup></m:math> and original DFT coefficients <m:math overflow="scroll"><m:mrow><m:mi>X</m:mi><m:mo>[</m:mo><m:mi>p</m:mi><m:mo>]</m:mo></m:mrow></m:math>. If an original DFT coefficient contributes to the value of a smaller DFT coefficient, an edge is placed between the two vertices. It is easy to see that this is a bipartite graph because the vertex set can be partitioned into smaller DFT coefficients and original DFT coefficients.</para>
+        <para id="id177245">We denote a smaller DFT coefficient vertex as a <emphasis effect="italics">zero-ton</emphasis> if no nodes are connected to it, a <emphasis effect="italics">singleton</emphasis> if exactly one node is connected to it, and a <emphasis effect="italics">multi-ton</emphasis> if it is neither a zero-ton nor a singleton.</para>
+        <para id="id177265">If a vertex <m:math overflow="scroll"><m:mrow><m:msubsup><m:mover accent="true"><m:mi>y</m:mi><m:mo>→</m:mo></m:mover><m:mi>l</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>i</m:mi></m:mrow></m:msubsup><m:mo>=</m:mo><m:mrow><m:mo>(</m:mo><m:msub><m:mi>x</m:mi><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow><m:mo>,</m:mo><m:msub><m:mover accent="true"><m:mi>x</m:mi><m:mo>˜</m:mo></m:mover><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow><m:mo>)</m:mo></m:mrow></m:mrow></m:math> is a pair of zeros, then it is a zero-ton. Otherwise, to determine whether a vertex is a zero-ton, a singleton, or a multi-ton, the algorithm uses a “Ratio Test" <link target-id="bid1"/>. Recall that a circular shift in the time domain is a multiplication by a complex exponential in the frequency domain so that we may use the values in <m:math overflow="scroll"><m:msubsup><m:mover accent="true"><m:mi>y</m:mi><m:mo>→</m:mo></m:mover><m:mi>l</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>i</m:mi></m:mrow></m:msubsup></m:math> to determine whether the vertex is a singleton. To perform this ratio test we may check if the quantity</para>
+        <equation id="id177380">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>q</m:mi>
+              <m:mo>=</m:mo>
+              <m:mfrac>
+                <m:mi>N</m:mi>
+                <m:mrow>
+                  <m:mn>2</m:mn>
+                  <m:mi>π</m:mi>
+                </m:mrow>
+              </m:mfrac>
+              <m:mfenced separators="" open="(" close=")">
+                <m:mi>∠</m:mi>
+                <m:mfrac>
+                  <m:mrow>
+                    <m:msub>
+                      <m:mover accent="true">
+                        <m:mi>x</m:mi>
+                        <m:mo>˜</m:mo>
+                      </m:mover>
+                      <m:mi>i</m:mi>
+                    </m:msub>
+                    <m:mrow>
+                      <m:mo>[</m:mo>
+                      <m:mi>l</m:mi>
+                      <m:mo>]</m:mo>
+                    </m:mrow>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:msub>
+                      <m:mi>x</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msub>
+                    <m:mrow>
+                      <m:mo>[</m:mo>
+                      <m:mi>l</m:mi>
+                      <m:mo>]</m:mo>
+                    </m:mrow>
+                  </m:mrow>
+                </m:mfrac>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id177452">is an integer. If <m:math overflow="scroll"><m:mi>q</m:mi></m:math> is an integer, then the vertex in question is a singleton and thus, <m:math overflow="scroll"><m:mrow><m:mi>X</m:mi><m:mrow><m:mo>[</m:mo><m:mi>q</m:mi><m:mo>]</m:mo></m:mrow><m:mo>=</m:mo><m:msub><m:mi>x</m:mi><m:mi>i</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>l</m:mi><m:mo>]</m:mo></m:mrow></m:mrow></m:math>; otherwise, the vertex in question is a multi-ton.</para>
+        <para id="id177500">We now describe the process of backsolving this bipartite graph to get the DFT coefficients of the original signal. If a vertex is a zero-ton, we may remove it from the graph because it provides no relevant information. If a vertex is a singleton, we have obtained a DFT coefficient <m:math overflow="scroll"><m:mrow><m:mi>X</m:mi><m:mo>[</m:mo><m:mi>q</m:mi><m:mo>]</m:mo></m:mrow></m:math>. By the “mixing” process of aliasing, we know which smaller DFT pairs <m:math overflow="scroll"><m:msubsup><m:mover accent="true"><m:mi>y</m:mi><m:mo>→</m:mo></m:mover><m:mi>l</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>i</m:mi></m:mrow></m:msubsup></m:math> that <m:math overflow="scroll"><m:mrow><m:mi>X</m:mi><m:mo>[</m:mo><m:mi>q</m:mi><m:mo>]</m:mo></m:mrow></m:math> contributes to. With this information, we may subtract <m:math overflow="scroll"><m:mrow><m:mi>X</m:mi><m:mo>[</m:mo><m:mi>q</m:mi><m:mo>]</m:mo></m:mrow></m:math> from these smaller DFT pairs, thus removing edges from the graph. We repeat these steps until all edges are removed from the graph and <m:math overflow="scroll"><m:mrow><m:mi>X</m:mi><m:mo>[</m:mo><m:mi>q</m:mi><m:mo>]</m:mo></m:mrow></m:math> is known completely. This process is known as <emphasis effect="italics">peeling</emphasis> and is reminiscent of decoding Low Density Parity Check codes.</para>
+      </section>
+      <section id="uid4">
+        <title>Convergence Conditions</title>
+        <para id="id177613">In general, FFAST is a robust algorithm that can handle noise, many signal lengths <m:math overflow="scroll"><m:mi>N</m:mi></m:math>, and sparsity factors <m:math overflow="scroll"><m:mi>k</m:mi></m:math>, where <m:math overflow="scroll"><m:mi>k</m:mi></m:math> is the number of nonzero DFT coefficients. We presented a specific noiseless version of the algorithm that requires the sparsity constraint <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:msup><m:mi>N</m:mi><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>3</m:mn></m:mrow></m:msup></m:mrow></m:math>. As previously mentioned, FFAST also requires that the subsampling coefficients are coprime factors of <m:math overflow="scroll"><m:mi>N</m:mi></m:math>. With these conditions, FFAST is guaranteed to converge to a solution almost surely.</para>
+      </section>
+    </section>
+  </content>
+  <bib:file>
+    <bib:entry id="bid0">
+      <bib:phdthesis>
+        <!--required fields-->
+        <bib:author>Pawar, Sameer</bib:author>
+        <bib:title>PULSE: Peeling-based Ultra-Low complexity algorithms for Sparse signal Estimation</bib:title>
+        <bib:school>EECS Department, University of California, Berkeley</bib:school>
+        <bib:year>2013</bib:year>
+        <!--optional fields-->
+        <bib:type>Ph. D. Thesis</bib:type>
+        <bib:address/>
+        <bib:month>Dec</bib:month>
+        <bib:note/>
+      </bib:phdthesis>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:inproceedings>
+        <!--required fields-->
+        <bib:author>Zhang, Qiwei and Kokkeler, Andre BJ and Smit, Gerard JM</bib:author>
+        <bib:title>An efficient multi-resolution spectrum sensing method for cognitive radio</bib:title>
+        <bib:booktitle>Communications and Networking in China, 2008. ChinaCom 2008. Third International Conference on</bib:booktitle>
+        <bib:year>2008</bib:year>
+        <!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages>1226–1229</bib:pages>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization>IEEE</bib:organization>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+  </bib:file>
+</document>

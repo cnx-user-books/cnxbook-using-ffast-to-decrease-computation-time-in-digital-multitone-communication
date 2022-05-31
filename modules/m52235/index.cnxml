@@ -1,0 +1,625 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML">
+  <title>FFT Methods</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52235</md:content-id>
+  <md:title>FFT Methods</md:title>
+  <md:abstract/>
+  <md:uuid>fd1c456e-0f18-4ad7-a23a-ddbc31600b9f</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>FFT Methods</title>
+      <section id="uid1">
+        <title>Self-Sorting Mixed-Radix FFT</title>
+        <para id="id272573">The mixed-radix approach utilizes clever subsampling of <m:math overflow="scroll"><m:mrow><m:mi>x</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> and permutations of twiddle factor matrices to lower operation counts. The first step is to compute the prime factorization of the signal length <m:math overflow="scroll"><m:mi>N</m:mi></m:math>. Prime factors of 2 and 3 are then combined to create as many factors of 4 and 6 as possible. The resulting prime factorization has the form <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>=</m:mo><m:msubsup><m:mo>∏</m:mo><m:mrow><m:mi>i</m:mi><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow><m:mi>F</m:mi></m:msubsup><m:msub><m:mi>f</m:mi><m:mi>i</m:mi></m:msub></m:mrow></m:math>. We can then perform a single step <m:math overflow="scroll"><m:msub><m:mi>T</m:mi><m:mi>i</m:mi></m:msub></m:math> of the algorithm by computing <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:msub><m:mi>f</m:mi><m:mi>i</m:mi></m:msub></m:mrow></m:math> FFTs of length <m:math overflow="scroll"><m:msub><m:mi>f</m:mi><m:mi>i</m:mi></m:msub></m:math>.</para>
+        <para id="id273021">Four unique matrix constructions are necessary to generalize a single step of the algorithm. The first is the identity matrix <m:math overflow="scroll"><m:mrow><m:msub><m:mi>I</m:mi><m:mi>r</m:mi></m:msub><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>r</m:mi><m:mo>×</m:mo><m:mi>r</m:mi></m:mrow></m:msup></m:mrow></m:math>. The second is the permutation matrix <m:math overflow="scroll"><m:mrow><m:msubsup><m:mi>P</m:mi><m:mi>b</m:mi><m:mi>a</m:mi></m:msubsup><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>a</m:mi><m:mi>b</m:mi><m:mo>×</m:mo><m:mi>a</m:mi><m:mi>b</m:mi></m:mrow></m:msup></m:mrow></m:math>, where</para>
+        <equation id="id273274">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msubsup>
+                <m:mi>P</m:mi>
+                <m:mi>b</m:mi>
+                <m:mi>a</m:mi>
+              </m:msubsup>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>j</m:mi>
+                <m:mo>,</m:mo>
+                <m:mi>k</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:mfenced separators="" open="{" close="">
+                <m:mtable>
+                  <m:mtr>
+                    <m:mtd>
+                      <m:mn>1</m:mn>
+                    </m:mtd>
+                    <m:mtd>
+                      <m:mrow>
+                        <m:mtext>if</m:mtext>
+                        <m:mspace width="0.166667em"/>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>r</m:mi>
+                        <m:mi>a</m:mi>
+                        <m:mo>+</m:mo>
+                        <m:mi>s</m:mi>
+                        <m:mspace width="0.166667em"/>
+                        <m:mspace width="0.166667em"/>
+                        <m:mtext>and</m:mtext>
+                        <m:mspace width="0.166667em"/>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>k</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>s</m:mi>
+                        <m:mi>b</m:mi>
+                        <m:mo>+</m:mo>
+                        <m:mi>r</m:mi>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd>
+                      <m:mn>0</m:mn>
+                    </m:mtd>
+                    <m:mtd>
+                      <m:mtext>otherwise</m:mtext>
+                    </m:mtd>
+                  </m:mtr>
+                </m:mtable>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id273380">Note that <m:math overflow="scroll"><m:msubsup><m:mi>P</m:mi><m:mi>b</m:mi><m:mi>a</m:mi></m:msubsup></m:math> swaps positions <m:math overflow="scroll"><m:mrow><m:mi>r</m:mi><m:mi>a</m:mi><m:mo>+</m:mo><m:mi>s</m:mi></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:mi>s</m:mi><m:mi>b</m:mi><m:mo>+</m:mo><m:mi>r</m:mi></m:mrow></m:math> in a vector. The third matrix to consider is a diagonal matrix of twiddle factors <m:math overflow="scroll"><m:mrow><m:msubsup><m:mi>D</m:mi><m:mi>b</m:mi><m:mi>a</m:mi></m:msubsup><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>a</m:mi><m:mi>b</m:mi><m:mo>×</m:mo><m:mi>a</m:mi><m:mi>b</m:mi></m:mrow></m:msup></m:mrow></m:math>, where</para>
+        <equation id="id273469">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msubsup>
+                <m:mi>D</m:mi>
+                <m:mi>b</m:mi>
+                <m:mi>a</m:mi>
+              </m:msubsup>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>j</m:mi>
+                <m:mo>,</m:mo>
+                <m:mi>k</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:mfenced separators="" open="{" close="">
+                <m:mtable>
+                  <m:mtr>
+                    <m:mtd>
+                      <m:msubsup>
+                        <m:mi>ω</m:mi>
+                        <m:mrow>
+                          <m:mi>a</m:mi>
+                          <m:mi>b</m:mi>
+                        </m:mrow>
+                        <m:mrow>
+                          <m:mi>s</m:mi>
+                          <m:mi>r</m:mi>
+                        </m:mrow>
+                      </m:msubsup>
+                    </m:mtd>
+                    <m:mtd>
+                      <m:mrow>
+                        <m:mtext>if</m:mtext>
+                        <m:mspace width="0.166667em"/>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>k</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>s</m:mi>
+                        <m:mi>b</m:mi>
+                        <m:mo>+</m:mo>
+                        <m:mi>r</m:mi>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd>
+                      <m:mn>0</m:mn>
+                    </m:mtd>
+                    <m:mtd>
+                      <m:mtext>otherwise</m:mtext>
+                    </m:mtd>
+                  </m:mtr>
+                </m:mtable>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id273564">with <m:math overflow="scroll"><m:mrow><m:msub><m:mi>ω</m:mi><m:mrow><m:mi>a</m:mi><m:mi>b</m:mi></m:mrow></m:msub><m:mo>=</m:mo><m:msup><m:mi>e</m:mi><m:mrow><m:mo>-</m:mo><m:mi>j</m:mi><m:mn>2</m:mn><m:mi>π</m:mi><m:mo>/</m:mo><m:mo>(</m:mo><m:mi>a</m:mi><m:mi>b</m:mi><m:mo>)</m:mo></m:mrow></m:msup></m:mrow></m:math>. The fourth and final matrix construction to consider is the standard DFT matrix <m:math overflow="scroll"><m:mrow><m:msub><m:mi>W</m:mi><m:mi>n</m:mi></m:msub><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>n</m:mi><m:mo>×</m:mo><m:mi>n</m:mi></m:mrow></m:msup></m:mrow></m:math>.</para>
+        <para id="id273645">The mixed-radix algorithm requires the interaction of operations on the subspaces <m:math overflow="scroll"><m:mrow><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>i</m:mi></m:msup><m:mo>,</m:mo><m:mspace width="0.166667em"/><m:mspace width="0.166667em"/><m:mi>i</m:mi><m:mo>=</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>,</m:mo><m:mi>F</m:mi></m:mrow></m:math>, and so it is necessary to consider the Kronecker Product in calculations. The Kronecker Product is an operation defined as <m:math overflow="scroll"><m:mrow><m:mo>⊗</m:mo><m:mo>:</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>m</m:mi><m:mo>×</m:mo><m:mi>n</m:mi></m:mrow></m:msup><m:mo>×</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>p</m:mi><m:mo>×</m:mo><m:mi>q</m:mi></m:mrow></m:msup><m:mo>→</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>m</m:mi><m:mi>p</m:mi><m:mo>×</m:mo><m:mi>n</m:mi><m:mi>q</m:mi></m:mrow></m:msup></m:mrow></m:math>. If <m:math overflow="scroll"><m:mrow><m:mi>C</m:mi><m:mo>=</m:mo><m:mi>A</m:mi><m:mo>⊗</m:mo><m:mi>B</m:mi></m:mrow></m:math>, then</para>
+        <equation id="id273775">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>C</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>v</m:mi>
+                <m:mo>,</m:mo>
+                <m:mi>w</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:mi>A</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>i</m:mi>
+                <m:mo>,</m:mo>
+                <m:mi>j</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mi>B</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>k</m:mi>
+                <m:mo>,</m:mo>
+                <m:mi>l</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mtext>and</m:mtext>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mfenced separators="" open="{" close="">
+                <m:mtable>
+                  <m:mtr>
+                    <m:mtd>
+                      <m:mrow>
+                        <m:mi>v</m:mi>
+                        <m:mo>≡</m:mo>
+                        <m:mi>p</m:mi>
+                        <m:mo>(</m:mo>
+                        <m:mi>i</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:mn>1</m:mn>
+                        <m:mo>)</m:mo>
+                        <m:mo>+</m:mo>
+                        <m:mi>k</m:mi>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd>
+                      <m:mrow>
+                        <m:mi>w</m:mi>
+                        <m:mo>≡</m:mo>
+                        <m:mi>q</m:mi>
+                        <m:mo>(</m:mo>
+                        <m:mi>j</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:mn>1</m:mn>
+                        <m:mo>)</m:mo>
+                        <m:mo>+</m:mo>
+                        <m:mi>l</m:mi>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                </m:mtable>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id273906">Using these matrices, it possible to compose a single steps <m:math overflow="scroll"><m:msub><m:mi>T</m:mi><m:mi>i</m:mi></m:msub></m:math> using the following equation <link target-id="bid0"/>:</para>
+        <equation id="id273928">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mi>T</m:mi>
+                <m:mi>i</m:mi>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:msubsup>
+                  <m:mi>P</m:mi>
+                  <m:mrow>
+                    <m:msub>
+                      <m:mi>q</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msub>
+                  </m:mrow>
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mi>i</m:mi>
+                  </m:msub>
+                </m:msubsup>
+                <m:msubsup>
+                  <m:mi>D</m:mi>
+                  <m:mrow>
+                    <m:msub>
+                      <m:mi>q</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msub>
+                  </m:mrow>
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mi>i</m:mi>
+                  </m:msub>
+                </m:msubsup>
+                <m:mo>⊗</m:mo>
+                <m:msub>
+                  <m:mi>I</m:mi>
+                  <m:msub>
+                    <m:mi>p</m:mi>
+                    <m:mrow>
+                      <m:mi>i</m:mi>
+                      <m:mo>-</m:mo>
+                      <m:mn>1</m:mn>
+                    </m:mrow>
+                  </m:msub>
+                </m:msub>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:msub>
+                  <m:mi>W</m:mi>
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mi>i</m:mi>
+                  </m:msub>
+                </m:msub>
+                <m:mo>⊗</m:mo>
+                <m:msub>
+                  <m:mi>I</m:mi>
+                  <m:msub>
+                    <m:mi>m</m:mi>
+                    <m:mi>i</m:mi>
+                  </m:msub>
+                </m:msub>
+                <m:mo>)</m:mo>
+              </m:mrow>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id274050">where</para>
+        <equation id="id274053">
+          <m:math overflow="scroll" mode="display">
+            <m:mfenced separators="" open="" close="">
+              <m:mtable>
+                <m:mtr>
+                  <m:mtd>
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>p</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:munderover>
+                        <m:mo>∏</m:mo>
+                        <m:mrow>
+                          <m:mi>j</m:mi>
+                          <m:mo>=</m:mo>
+                          <m:mn>1</m:mn>
+                        </m:mrow>
+                        <m:mi>i</m:mi>
+                      </m:munderover>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>j</m:mi>
+                      </m:msub>
+                      <m:mspace width="0.166667em"/>
+                      <m:mspace width="0.166667em"/>
+                      <m:mspace width="0.166667em"/>
+                      <m:mspace width="0.166667em"/>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:msub>
+                          <m:mi>p</m:mi>
+                          <m:mn>0</m:mn>
+                        </m:msub>
+                        <m:mo>=</m:mo>
+                        <m:mn>1</m:mn>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                      <m:mo>,</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                  <m:mtd>
+                    <m:mrow>
+                      <m:mi>i</m:mi>
+                      <m:mo>=</m:mo>
+                      <m:mn>0</m:mn>
+                      <m:mo>,</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>,</m:mo>
+                      <m:mi>F</m:mi>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+                <m:mtr>
+                  <m:mtd>
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>q</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:mi>N</m:mi>
+                      <m:mo>/</m:mo>
+                      <m:msub>
+                        <m:mi>p</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msub>
+                      <m:mo>,</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                  <m:mtd>
+                    <m:mrow>
+                      <m:mi>i</m:mi>
+                      <m:mo>=</m:mo>
+                      <m:mn>1</m:mn>
+                      <m:mo>,</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>,</m:mo>
+                      <m:mi>F</m:mi>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+                <m:mtr>
+                  <m:mtd>
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>m</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:mi>N</m:mi>
+                      <m:mo>/</m:mo>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msub>
+                      <m:mo>,</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                  <m:mtd>
+                    <m:mrow>
+                      <m:mi>i</m:mi>
+                      <m:mo>=</m:mo>
+                      <m:mn>1</m:mn>
+                      <m:mo>,</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>.</m:mo>
+                      <m:mo>,</m:mo>
+                      <m:mi>F</m:mi>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:mfenced>
+          </m:math>
+        </equation>
+        <para id="id274254">Note that <m:math overflow="scroll"><m:mrow><m:msub><m:mi>T</m:mi><m:mi>i</m:mi></m:msub><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mrow><m:mi>N</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:msup></m:mrow></m:math>.</para>
+        <para id="id274290">To implement the algorithm, each stage is applied iteratively to acquire <m:math overflow="scroll"><m:mi>X</m:mi></m:math>. <m:math overflow="scroll"><m:msub><m:mi>T</m:mi><m:mi>i</m:mi></m:msub></m:math> may be simplified into two separate steps using the definitions of each matrix to yield the following algorithm structure:</para>
+        <figure id="uid2">
+          <media id="uid2_media" alt="">
+            <image mime-type="image/png" src="../../media/stripped_fft.png" id="uid2_onlineimage" width="455"><!-- NOTE: attribute width changes image size online (pixels). original width is 455. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/stripped_fft.eps" id="uid2_printimage" print-width="4in">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Mixed Radix</caption>
+        </figure>
+        <para id="id274330">The DFT module in the above code utilizes the Winograd Short-Length Transforms to minimize operations when computing DFTs of length less than 6. For all other lengths, Rader's FFT is used.</para>
+      </section>
+      <section id="uid3">
+        <title>Rader's FFT</title>
+        <para id="id274344">Rader's FFT for prime lengths exploits results from number theory to express the DFT as a composite-length cyclic convolution <link target-id="bid1"/>. Any prime number <m:math overflow="scroll"><m:mi>p</m:mi></m:math> defines a multiplicative group modulo <m:math overflow="scroll"><m:mi>p</m:mi></m:math>, denoted <m:math overflow="scroll"><m:mrow><m:msubsup><m:mi mathvariant="double-struck">Z</m:mi><m:mi>n</m:mi><m:mo>×</m:mo></m:msubsup><m:mo>=</m:mo><m:mfenced separators="" open="{" close="}"><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mo>,</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>,</m:mo><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mfenced></m:mrow></m:math>. This group is cyclic, i.e., <m:math overflow="scroll"><m:mrow><m:mo>∀</m:mo><m:mi>a</m:mi><m:mo>∈</m:mo><m:msubsup><m:mi mathvariant="double-struck">Z</m:mi><m:mi>p</m:mi><m:mo>×</m:mo></m:msubsup><m:mo>∃</m:mo><m:mi>g</m:mi><m:mo>∈</m:mo><m:msubsup><m:mi mathvariant="double-struck">N</m:mi><m:mrow><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>2</m:mn></m:mrow><m:mn>0</m:mn></m:msubsup><m:mo>:</m:mo><m:mi>a</m:mi><m:mo>=</m:mo><m:msup><m:mi>g</m:mi><m:mi>i</m:mi></m:msup><m:mo>=</m:mo><m:msup><m:mi>g</m:mi><m:mrow><m:mo>-</m:mo><m:mi>j</m:mi></m:mrow></m:msup><m:mo>,</m:mo><m:mspace width="0.166667em"/><m:mspace width="0.166667em"/><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>i</m:mi><m:mo>,</m:mo><m:mi>j</m:mi><m:mo>≤</m:mo><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>2</m:mn></m:mrow></m:math>, where <m:math overflow="scroll"><m:mi>g</m:mi></m:math> is known as the <emphasis effect="italics">primitive root modulo</emphasis>     <m:math overflow="scroll"><m:mi mathvariant="italic">p</m:mi></m:math> and <m:math overflow="scroll"><m:mrow><m:msubsup><m:mi mathvariant="double-struck">N</m:mi><m:mrow><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>2</m:mn></m:mrow><m:mn>0</m:mn></m:msubsup><m:mo>=</m:mo><m:mfenced separators="" open="{" close="}"><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mo>,</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>,</m:mo><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>2</m:mn></m:mfenced></m:mrow></m:math>. In practice, there is no general formula for finding <m:math overflow="scroll"><m:mi>g</m:mi></m:math> for <m:math overflow="scroll"><m:mi>p</m:mi></m:math>, but in this implementation <m:math overflow="scroll"><m:mi>N</m:mi></m:math> is known and therefore <m:math overflow="scroll"><m:mi>g</m:mi></m:math> may be stored in a lookup table.</para><para id="id274648">The general form of the DFT of length <m:math overflow="scroll"><m:mi>p</m:mi></m:math> is given by</para>
+        <equation id="id274659">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mi>X</m:mi>
+                <m:mi>k</m:mi>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:munderover>
+                <m:mo>∑</m:mo>
+                <m:mrow>
+                  <m:mi>n</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>0</m:mn>
+                </m:mrow>
+                <m:mrow>
+                  <m:mi>p</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:munderover>
+              <m:msub>
+                <m:mi>x</m:mi>
+                <m:mi>n</m:mi>
+              </m:msub>
+              <m:msubsup>
+                <m:mi>ω</m:mi>
+                <m:mrow>
+                  <m:mi>p</m:mi>
+                </m:mrow>
+                <m:mrow>
+                  <m:mi>n</m:mi>
+                  <m:mi>k</m:mi>
+                </m:mrow>
+              </m:msubsup>
+              <m:mo>=</m:mo>
+              <m:mover accent="true">
+                <m:mi>x</m:mi>
+                <m:mo>˜</m:mo>
+              </m:mover>
+              <m:mo>+</m:mo>
+              <m:munderover>
+                <m:mo>∑</m:mo>
+                <m:mrow>
+                  <m:mi>n</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+                <m:mrow>
+                  <m:mi>p</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:munderover>
+              <m:msub>
+                <m:mi>x</m:mi>
+                <m:mi>n</m:mi>
+              </m:msub>
+              <m:msubsup>
+                <m:mi>ω</m:mi>
+                <m:mi>p</m:mi>
+                <m:mrow>
+                  <m:mi>n</m:mi>
+                  <m:mi>k</m:mi>
+                </m:mrow>
+              </m:msubsup>
+              <m:mo>,</m:mo>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mi>k</m:mi>
+              <m:mo>=</m:mo>
+              <m:mn>1</m:mn>
+              <m:mo>,</m:mo>
+              <m:mn>2</m:mn>
+              <m:mo>,</m:mo>
+              <m:mo>.</m:mo>
+              <m:mo>.</m:mo>
+              <m:mo>.</m:mo>
+              <m:mo>,</m:mo>
+              <m:mi>p</m:mi>
+              <m:mo>-</m:mo>
+              <m:mn>1</m:mn>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id274818">Since the twiddle factor, <m:math overflow="scroll"><m:msubsup><m:mi>ω</m:mi><m:mi>p</m:mi><m:mrow><m:mi>n</m:mi><m:mi>k</m:mi></m:mrow></m:msubsup></m:math>, is naturally computed modulo <m:math overflow="scroll"><m:mi>p</m:mi></m:math> and both <m:math overflow="scroll"><m:mi>n</m:mi></m:math> and <m:math overflow="scroll"><m:mi>k</m:mi></m:math> range from <m:math overflow="scroll"><m:mrow><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mo>,</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>.</m:mo><m:mo>,</m:mo><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:math>, we can rewrite the above formula using <m:math overflow="scroll"><m:mi>g</m:mi></m:math>:</para>
+        <equation id="id274903">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mi>X</m:mi>
+                <m:msup>
+                  <m:mi>g</m:mi>
+                  <m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mi>r</m:mi>
+                  </m:mrow>
+                </m:msup>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:mover accent="true">
+                <m:mi>x</m:mi>
+                <m:mo>˜</m:mo>
+              </m:mover>
+              <m:mo>+</m:mo>
+              <m:munderover>
+                <m:mo>∑</m:mo>
+                <m:mrow>
+                  <m:mi>q</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>0</m:mn>
+                </m:mrow>
+                <m:mrow>
+                  <m:mi>p</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mn>2</m:mn>
+                </m:mrow>
+              </m:munderover>
+              <m:msub>
+                <m:mi>x</m:mi>
+                <m:msup>
+                  <m:mi>g</m:mi>
+                  <m:mi>q</m:mi>
+                </m:msup>
+              </m:msub>
+              <m:msubsup>
+                <m:mi>ω</m:mi>
+                <m:mi>p</m:mi>
+                <m:msup>
+                  <m:mi>g</m:mi>
+                  <m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mo>(</m:mo>
+                    <m:mi>r</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mi>q</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                </m:msup>
+              </m:msubsup>
+              <m:mo>,</m:mo>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mspace width="0.166667em"/>
+              <m:mi>r</m:mi>
+              <m:mo>=</m:mo>
+              <m:mn>0</m:mn>
+              <m:mo>,</m:mo>
+              <m:mn>1</m:mn>
+              <m:mo>,</m:mo>
+              <m:mo>.</m:mo>
+              <m:mo>.</m:mo>
+              <m:mo>.</m:mo>
+              <m:mo>,</m:mo>
+              <m:mi>p</m:mi>
+              <m:mo>-</m:mo>
+              <m:mn>2</m:mn>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id275045">This formulation is of the form of a cyclic convolution of two sequences <m:math overflow="scroll"><m:mi>α</m:mi></m:math> and <m:math overflow="scroll"><m:mi>β</m:mi></m:math> where <m:math overflow="scroll"><m:mrow><m:msub><m:mi>α</m:mi><m:mi>q</m:mi></m:msub><m:mo>=</m:mo><m:msub><m:mi>h</m:mi><m:msup><m:mi>g</m:mi><m:mi>q</m:mi></m:msup></m:msub></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:msub><m:mi>β</m:mi><m:mi>q</m:mi></m:msub><m:mo>=</m:mo><m:msubsup><m:mi>ω</m:mi><m:mi>p</m:mi><m:msup><m:mi>g</m:mi><m:mrow><m:mo>-</m:mo><m:mi>q</m:mi></m:mrow></m:msup></m:msubsup></m:mrow></m:math> of length <m:math overflow="scroll"><m:mrow><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:math>. This convolution is computed via the convolution theorem:</para>
+        <equation id="id275143">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>X</m:mi>
+              <m:mo>-</m:mo>
+              <m:mover accent="true">
+                <m:mi>x</m:mi>
+                <m:mo>˜</m:mo>
+              </m:mover>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mtext>DFT</m:mtext>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:msup>
+              <m:mfenced separators="" open="[" close="]">
+                <m:mtext>DFT</m:mtext>
+                <m:mo>[</m:mo>
+                <m:mi>α</m:mi>
+                <m:mo>]</m:mo>
+                <m:mo>·</m:mo>
+                <m:mtext>DFT</m:mtext>
+                <m:mo>[</m:mo>
+                <m:mi>β</m:mi>
+                <m:mo>]</m:mo>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id275206">For speed, the sequence <m:math overflow="scroll"><m:mi>α</m:mi></m:math> is zero-padded between its zeroth and first index to a length <m:math overflow="scroll"><m:mi>M</m:mi></m:math> which is a power of 2 such that <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>≥</m:mo><m:mn>2</m:mn><m:mi>p</m:mi><m:mo>-</m:mo><m:mn>3</m:mn></m:mrow></m:math> and <m:math overflow="scroll"><m:mi>β</m:mi></m:math> is cyclically repeated to be length <m:math overflow="scroll"><m:mi>M</m:mi></m:math>. Since <m:math overflow="scroll"><m:mi>N</m:mi></m:math> is known, it is possible to store the DFT of the sequence <m:math overflow="scroll"><m:mi>β</m:mi></m:math> in a lookup table. The DFT of <m:math overflow="scroll"><m:mi>α</m:mi></m:math> is then computed using the standard radix-2 Cooley-Tukey algorithm. The two DFTs are multiplied pointwise and then the inverse DFT is again calculated using the standard Cooley-Tukey algorithm. The first <m:math overflow="scroll"><m:mi>p</m:mi></m:math> elements are then the result of the cyclic convolution. The final result is attained after adding back the DC offset.</para><para id="eip-463">For small numerical examples demonstrating this implementation of Rader's FFT, see this excellent guide <link url="http://www.skybluetrades.net/blog/posts/2013/12/31/data-analysis-fft-9.html" window="new">here</link>.</para></section>
+    </section>
+  </content>
+</document>

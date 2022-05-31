@@ -1,0 +1,250 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Digital Multitone Modulation</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52214</md:content-id>
+  <md:title>Digital Multitone Modulation</md:title>
+  <md:abstract/>
+  <md:uuid>743ad7cb-f1a1-4e95-93b3-071826263162</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>Digital Multitone Modulation</title>
+      <para id="id242152">We present the digital multitone modulation scheme and demonstrate its suitability for demodulation via FFAST.</para>
+      <section id="uid1">
+        <title>Digital Multitone Modulation Scheme</title>
+        <para id="id242164">Let a finite alphabet <m:math overflow="scroll"><m:mrow><m:mi mathvariant="double-struck">A</m:mi><m:mo>=</m:mo><m:mo>{</m:mo><m:msub><m:mi>a</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>a</m:mi><m:mn>2</m:mn></m:msub><m:mo>,</m:mo><m:mo>⋯</m:mo><m:msub><m:mi>a</m:mi><m:mrow><m:mo>|</m:mo><m:mi mathvariant="double-struck">A</m:mi><m:mo>|</m:mo></m:mrow></m:msub><m:mo>}</m:mo></m:mrow></m:math> be given, where each symbol <m:math overflow="scroll"><m:mrow><m:mi>a</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">A</m:mi></m:mrow></m:math> is associated with a unique sequence of <m:math overflow="scroll"><m:mi>B</m:mi></m:math> ordered bits, <m:math overflow="scroll"><m:mrow><m:msub><m:mi>b</m:mi><m:mrow><m:mi>B</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msub><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:msub><m:mi>b</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>b</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:math>, where <m:math overflow="scroll"><m:mrow><m:mi>B</m:mi><m:mo>=</m:mo><m:mo>⌈</m:mo><m:msub><m:mo form="prefix">log</m:mo><m:mn>2</m:mn></m:msub><m:mo>|</m:mo><m:mi mathvariant="double-struck">A</m:mi><m:mo>|</m:mo><m:mo>⌉</m:mo></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:msub><m:mi>b</m:mi><m:mi>i</m:mi></m:msub><m:mo>∈</m:mo><m:mrow><m:mo>{</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>}</m:mo></m:mrow></m:mrow></m:math> for <m:math overflow="scroll"><m:mrow><m:mi>i</m:mi><m:mo>=</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:mi>B</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:math>. For example, let <m:math overflow="scroll"><m:mi mathvariant="double-struck">A</m:mi></m:math> be the set of all lowercase letters in the English alphabet and associate each letter with its order in the alphabet. In this case, the binary sequence `01101' corresponds to the thirteenth letter, “m".</para>
+        <para id="id242727">Generally speaking, Digital Multitone (DMT) Modulation is a “parallel communication scheme in which several carriers of different frequencies each carry narrowband signals simultaneously” <link target-id="bid0"/>. These narrowband signals are usually sinusoids that encode the binary sequence associated with each symbol. If a bit is “high", then the corresponding sinusoid is expressed in the output signal; otherwise the bit is “low" and the sinusoid is not expressed. More precisely, given a symbol <m:math overflow="scroll"><m:mrow><m:mi>a</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">A</m:mi></m:mrow></m:math> with the corresponding binary sequence <m:math overflow="scroll"><m:mrow><m:msub><m:mi>b</m:mi><m:mrow><m:mi>B</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msub><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:msub><m:mi>b</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>b</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:math>, the message signal <m:math overflow="scroll"><m:mrow><m:mi>m</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> is defined to be</para>
+        <equation id="uid2">
+          <m:math overflow="scroll" mode="display">
+            <m:mstyle scriptlevel="0" displaystyle="true">
+              <m:mrow>
+                <m:mi>m</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>t</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mfrac>
+                  <m:mn>1</m:mn>
+                  <m:mrow>
+                    <m:msubsup>
+                      <m:mo>∑</m:mo>
+                      <m:mrow>
+                        <m:mi>k</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mn>0</m:mn>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mi>B</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:mn>1</m:mn>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:msub>
+                      <m:mi>b</m:mi>
+                      <m:mi>k</m:mi>
+                    </m:msub>
+                  </m:mrow>
+                </m:mfrac>
+                <m:munderover>
+                  <m:mo>∑</m:mo>
+                  <m:mrow>
+                    <m:mi>k</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mn>0</m:mn>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mi>B</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mn>1</m:mn>
+                  </m:mrow>
+                </m:munderover>
+                <m:msub>
+                  <m:mi>b</m:mi>
+                  <m:mi>k</m:mi>
+                </m:msub>
+                <m:mi>c</m:mi>
+                <m:mi>o</m:mi>
+                <m:mi>s</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mn>2</m:mn>
+                  <m:mi>π</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>k</m:mi>
+                    <m:mo>+</m:mo>
+                    <m:mn>1</m:mn>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mn>0</m:mn>
+                  </m:msub>
+                  <m:mi>t</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+              </m:mrow>
+            </m:mstyle>
+          </m:math>
+        </equation>
+        <para id="id243130">for some fundamental carrier frequency, <m:math overflow="scroll"><m:msub><m:mi>f</m:mi><m:mn>0</m:mn></m:msub></m:math>.</para>
+        <para id="id243148">In our previous example where <m:math overflow="scroll"><m:mi mathvariant="double-struck">A</m:mi></m:math> is the English alphabet and the letter “m" corresponds to “01101”, the message signal <m:math overflow="scroll"><m:mrow><m:mi>m</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> is the sum of the first, third, and fourth harmonics, as shown in the figure below:</para>
+        <figure id="uid3">
+          <media id="uid3_media" alt="">
+            <image mime-type="image/png" src="../../media/dmt_decomp.png" id="uid3_onlineimage" width="1489"><!-- NOTE: attribute width changes image size online (pixels). original width is 1489. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/dmt_decomp.eps" id="uid3_printimage" print-width="15.0cm">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Decomposition of “m” in DMT Scheme</caption>
+        </figure>
+        <para id="id243193">In our computational experiments, we use digital multitone modulation to encode 8-bit Extended ASCII values. An Extended ASCII table can be found <link url="http://www.asciitable.com/" window="new">here</link>. Below are several symbols and their digital multitone modulation signals.</para><figure id="uid4">
+          <media id="uid4_media" alt="">
+            <image mime-type="image/png" src="../../media/select_char_ascii_table.png" id="uid4_onlineimage" width="474"><!-- NOTE: attribute width changes image size online (pixels). original width is 474. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/select_char_ascii_table.eps" id="uid4_printimage" print-width="4in">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Table of Extended ASCII Values</caption>
+        </figure>
+        <figure id="uid5">
+          <media id="uid5_media" alt="">
+            <image mime-type="image/png" src="../../media/select_char_dmt_encoding.png" id="uid5_onlineimage" width="782"><!-- NOTE: attribute width changes image size online (pixels). original width is 782. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/select_char_dmt_encoding.eps" id="uid5_printimage" print-width="15.0cm">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Different Symbols in DMT Scheme</caption>
+        </figure>
+      </section>
+      <section id="uid6">
+        <title>Sparsity in Digital Multitone Modulation</title>
+        <para id="id243235">Sparse FFT algorithms only achieve low runtime complexity if the input signal is sparse in its Fourier representation; that is, if for a length-<m:math overflow="scroll"><m:mi>N</m:mi></m:math> signal, there are <m:math overflow="scroll"><m:mi>k</m:mi></m:math> nonzero DFT coefficients with <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>. FFAST, the sparse FFT algorithm that we will be using, requires the sparsity constraint <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:msup><m:mi>N</m:mi><m:mfrac><m:mn>1</m:mn><m:mn>3</m:mn></m:mfrac></m:msup></m:mrow></m:math>. Recall that the message signal, <m:math overflow="scroll"><m:mrow><m:mi>m</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math>, is defined as</para>
+        <equation id="uid7">
+          <m:math overflow="scroll" mode="display">
+            <m:mstyle scriptlevel="0" displaystyle="true">
+              <m:mrow>
+                <m:mi>m</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>t</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mfrac>
+                  <m:mn>1</m:mn>
+                  <m:mrow>
+                    <m:msubsup>
+                      <m:mo>∑</m:mo>
+                      <m:mrow>
+                        <m:mi>k</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mn>0</m:mn>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mi>B</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:mn>1</m:mn>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:msub>
+                      <m:mi>b</m:mi>
+                      <m:mi>k</m:mi>
+                    </m:msub>
+                  </m:mrow>
+                </m:mfrac>
+                <m:munderover>
+                  <m:mo>∑</m:mo>
+                  <m:mrow>
+                    <m:mi>k</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mn>0</m:mn>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mi>B</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mn>1</m:mn>
+                  </m:mrow>
+                </m:munderover>
+                <m:msub>
+                  <m:mi>b</m:mi>
+                  <m:mi>k</m:mi>
+                </m:msub>
+                <m:mi>c</m:mi>
+                <m:mi>o</m:mi>
+                <m:mi>s</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mn>2</m:mn>
+                  <m:mi>π</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>k</m:mi>
+                    <m:mo>+</m:mo>
+                    <m:mn>1</m:mn>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mn>0</m:mn>
+                  </m:msub>
+                  <m:mi>t</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+              </m:mrow>
+            </m:mstyle>
+          </m:math>
+        </equation>
+        <para id="id243439">so that the Nyquist frequency is <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi><m:msub><m:mi>f</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:math>. In order to ensure signal sparsity, the sampling frequency should be a multiple of the fundamental carrier frequency so that each of the sinusoidal components falls into a single frequency bin. This type of “on-the-grid" sampling may be expressed as</para>
+        <equation id="id243467">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mi>f</m:mi>
+                <m:mi>s</m:mi>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:mi>N</m:mi>
+              <m:msub>
+                <m:mi>f</m:mi>
+                <m:mn>0</m:mn>
+              </m:msub>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id243495">where <m:math overflow="scroll"><m:mi>N</m:mi></m:math> is the length of the sampled signal. Note that in <link target-id="uid7"/> each sinusoid contributes two DFT coefficients. Thus, <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>=</m:mo><m:mn>2</m:mn><m:mi>B</m:mi></m:mrow></m:math> if all bits are high so that the sparsity condition may be expressed as <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi><m:mo>&lt;</m:mo><m:msup><m:mi>N</m:mi><m:mfrac><m:mn>1</m:mn><m:mn>3</m:mn></m:mfrac></m:msup></m:mrow></m:math>.</para>
+        <para id="id243555">Sampling plays a large role in signal sparsification. There are many sampling methods that ensure sparsity and we present two different methods. The first method involves padding the input signal to achieve sparsity. Consider sampling at the Nyquist frequency so that <m:math overflow="scroll"><m:mrow><m:msub><m:mi>f</m:mi><m:mi>s</m:mi></m:msub><m:mo>=</m:mo><m:mn>2</m:mn><m:mi>B</m:mi><m:msub><m:mi>f</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:math>. As stated, this sampled signal is not necessarily sparse – in fact, <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>=</m:mo><m:mi>N</m:mi></m:mrow></m:math> if all bits are high! However, periodizing the sampled signal sufficiently many times will result in higher frequency resolution by placing zero-value coefficients in between the nonzero coefficients, thus sparsifying the signal. This method results in a spectrum with nonzero coefficient few and far between. Second, consider sampling at a sufficiently high rate to satisfy the sparsity condition; that is, <m:math overflow="scroll"><m:mrow><m:msub><m:mi>f</m:mi><m:mi>s</m:mi></m:msub><m:mo>&gt;</m:mo><m:mn>8</m:mn><m:msup><m:mi>B</m:mi><m:mn>3</m:mn></m:msup><m:msub><m:mi>f</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:math>. First note that <m:math overflow="scroll"><m:mrow><m:mn>8</m:mn><m:msup><m:mi>B</m:mi><m:mn>3</m:mn></m:msup><m:msub><m:mi>f</m:mi><m:mn>0</m:mn></m:msub><m:mo>&gt;</m:mo><m:mn>2</m:mn><m:mi>B</m:mi><m:msub><m:mi>f</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:math> so that aliasing does not occur. This method results in a compact spectrum where only the first and last <m:math overflow="scroll"><m:mi>B</m:mi></m:math> coefficients are nonzero. See the figure below for a spectra that are characteristic of these methods.</para>
+        <figure id="uid8">
+          <media id="uid8_media" alt="">
+            <image mime-type="image/png" src="../../media/sampling_styles.png" id="uid8_onlineimage" width="686"><!-- NOTE: attribute width changes image size online (pixels). original width is 686. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/sampling_styles.eps" id="uid8_printimage" print-width="4in">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Spectra for Different Sampling Schemes</caption>
+        </figure>
+        <para id="id243701">It should be noted that there are many sampling methods that ensure signal sparsity but for the purposes of this project, we care only that the signal is sparse. Sampling schemes are discussed further in <link target-id=""/>.</para>
+      </section>
+    </section>
+  </content>
+  <bib:file>
+    <bib:entry id="bid0">
+      <bib:article>
+        <!--required fields-->
+        <bib:author>Saltzberg, B</bib:author>
+        <bib:title>Comparison of single-carrier and multitone digital modulation for ADSL applications</bib:title>
+        <bib:journal>Communications Magazine, IEEE</bib:journal>
+        <bib:year>1998</bib:year>
+        <!--optional fields-->
+        <bib:volume>36</bib:volume>
+        <bib:number>11</bib:number>
+        <bib:pages>114–121</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+  </bib:file>
+</document>

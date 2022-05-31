@@ -1,0 +1,86 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Computational Experiment of FFAST</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52237</md:content-id>
+  <md:title>Computational Experiment of FFAST</md:title>
+  <md:abstract/>
+  <md:uuid>d7561fb0-4b2e-4774-89ca-bb05ea633391</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>Computational Experiment</title>
+      <section id="uid1">
+        <title>Experiment Design</title>
+        <para id="id251240">We wanted to determine the most computationally efficient demodulation method for the digital multitone scheme. In our experiment, we compared the operation counts of an optimized FFT meta algorithm, a partial DFT computation (the DFT computed only for the nonzero coefficients), and FFAST in demodulating various message signals. We chose these demodulation methods because they are currently the most efficient methods for DMT demodulation. The experiments were run using MATLAB 2014a. We chose to run our experiment in MATLAB for its rapid prototyping environment.</para>
+        <para id="id251248">While we were interested in comparing the computational efficiency of these algorithms, we chose to record operation counts rather than run times. Run times are unreliable metrics on machines with multitasking operating systems, especially when using highly optimized programs like MATLAB. We chose to count complex additions and multiplications as one operation each. We did not count conditional statements as operations because in most general processors, they only require a single cycle. We counted complex exponentials and trigonometric functions as one operation because they may be implemented using lookup tables.</para>
+      </section>
+      <section id="uid2">
+        <title>Meta-FFT Algorithm Implementation</title>
+        <para id="id251266">The two main goals for our implementation of the optimized FFT meta algorithm were to i) create an algorithm that performs without the need to zero-pad the signal and ii) allows us to count operations. Well-behaved signal lengths in our implementation of the algorithm have the form of <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>=</m:mo><m:msub><m:mi>n</m:mi><m:mn>0</m:mn></m:msub><m:msub><m:mi>n</m:mi><m:mn>1</m:mn></m:msub><m:msub><m:mi>n</m:mi><m:mn>2</m:mn></m:msub></m:mrow></m:math>, where <m:math overflow="scroll"><m:msub><m:mi>n</m:mi><m:mi>i</m:mi></m:msub></m:math> are coprimes. To exploit this structure, the optimized FFT meta algorithm, implemented in <code display="inline">meta_fft.m</code>, uses a self-sorting mixed-radix complex FFT <link target-id="bid0"/>. For sub-transforms of length <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mo>≤</m:mo><m:mi>N</m:mi><m:mo>≤</m:mo><m:mn>6</m:mn></m:mrow></m:math>, short-length Winograd transforms are applied to conserve operation count. All other transforms are computed using Rader's FFT algorithm <link target-id="bid1"/>.</para>
+      </section>
+      <section id="uid3">
+        <title>FFAST Implementation</title>
+        <para id="id251701">The FFAST algorithm implementation requires the signal itself, the length of the signal, and a vector of the downsampling coefficients.</para>
+        <para id="id251706">The FFAST algorithm was implemented in two files. The first file, <code display="inline">ffast_front_end.m</code>, downsamples the signal by each of the coprimes and feeds shifted and unshifted versions of the downsampling to the <code display="inline">meta_fft.m</code> file, to get operation counts and the relevant FFTs. Once the relevant DFT pairs are generated, <code display="inline">ffast_front_end.m</code> calls the back end of the algorithm.</para>
+        <para id="id251727">The second file, <code display="inline">peeling_decoder.m</code>, implements the peeling module of FFAST to backsolve the bipartite graph. The program will return a flag if the algorithm encounters no singletons at a stage where it has not been fully solved.</para>
+      </section>
+      <section id="uid4">
+        <title>Numerical Results</title>
+        <para id="id251746">In our first experiment, we varied the signal length N and observed the operation counts required for the optimized FFT meta algorithm, the partial DFT, and FFAST. We constructed each signal in the Fourier domain by randomly selecting <m:math overflow="scroll"><m:mi>k</m:mi></m:math> values from the set of integers <m:math overflow="scroll"><m:mrow><m:mo>{</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:mi>N</m:mi><m:mo>}</m:mo></m:mrow></m:math> and setting the corresponding DFT coefficients to <m:math overflow="scroll"><m:mfrac><m:mi>k</m:mi><m:mn>2</m:mn></m:mfrac></m:math>. For each signal, we put <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>=</m:mo><m:msup><m:mi>N</m:mi><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>3</m:mn></m:mrow></m:msup></m:mrow></m:math>, which is the greatest allowed sparsity in our scheme. The choice of <m:math overflow="scroll"><m:mi>k</m:mi></m:math> and values of the <m:math overflow="scroll"><m:mi>k</m:mi></m:math> nonzero DFT coefficients are consistent with the DMT scheme. We used MATLAB's library function <code display="inline">ifft()</code> to compute the corresponding signal and counted the number of operations it took each algorithm to compute the DFT. We observed that the operation count required for FFAST was usually an order of magnitude less that the operation counts required for both the meta FFT algorithm and the partial DFT. See Fig <link target-id="uid5"/> for the results of the first experiment.</para>
+        <figure id="uid5">
+          <media id="uid5_media" alt="">
+            <image mime-type="image/png" src="../../media/result1.png" id="uid5_onlineimage" width="1343"><!-- NOTE: attribute width changes image size online (pixels). original width is 1343. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/result1.eps" id="uid5_printimage" print-width="5in">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Experiment 1</caption>
+        </figure>
+        <para id="id251864">In our second experiment, we varied the signal sparsity <m:math overflow="scroll"><m:mi>k</m:mi></m:math> and observed the operation count required for the optimized FFT meta algorithm, the partial DFT, and FFAST. For this experiment, signal length <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>=</m:mo><m:mn>8740</m:mn></m:mrow></m:math> and the signals were constructed in the Fourier domain, as before. We observed an <m:math overflow="scroll"><m:mrow><m:mn>80</m:mn><m:mo>%</m:mo></m:mrow></m:math> computational decrease from the optimized FFT to FFAST for all <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:msup><m:mi>N</m:mi><m:mfrac><m:mn>1</m:mn><m:mn>3</m:mn></m:mfrac></m:msup></m:mrow></m:math>. However, for <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&gt;</m:mo><m:msup><m:mi>N</m:mi><m:mfrac><m:mn>1</m:mn><m:mn>3</m:mn></m:mfrac></m:msup></m:mrow></m:math>, we observed signals for which FFAST did not converge. See Fig <link target-id="uid6"/> for the results of the second experiment.</para>
+        <figure id="uid6">
+          <media id="uid6_media" alt="">
+            <image mime-type="image/png" src="../../media/result2.png" id="uid6_onlineimage" width="1394"><!-- NOTE: attribute width changes image size online (pixels). original width is 1394. --></image>
+            <image mime-type="application/postscript" for="pdf" src="../../media/result2.eps" id="uid6_printimage" print-width="5in">
+              <!--NOTE: attribute width changes image size in printed PDF (if specified in .tex file)-->
+            </image>
+          </media>
+          <caption>Experiment 2</caption>
+        </figure>
+        <para id="id251968">Note that the operation count for the partial DFT is less than the operation count for FFAST for <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:mn>8</m:mn></m:mrow></m:math>; this is somewhat misleading because the way that the partial DFT is computed is slightly optimistic. The partial DFT computes only the nonzero coefficients, which are known a priori in this experiment. In the general framework of DMT, one would need to compute all possibly nonzero DFT coefficients, resulting in an operation count higher than that of FFAST.</para>
+      </section>
+    </section>
+  </content>
+  <bib:file>
+    <bib:entry id="bid1">
+      <bib:article>
+        <!--required fields-->
+        <bib:author>Rader, Charles M</bib:author>
+        <bib:title>Discrete Fourier transforms when the number of data samples is prime</bib:title>
+        <bib:journal>Proceedings of the IEEE</bib:journal>
+        <bib:year>1968</bib:year>
+        <!--optional fields-->
+        <bib:volume>56</bib:volume>
+        <bib:number>6</bib:number>
+        <bib:pages>1107–1108</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:article>
+        <!--required fields-->
+        <bib:author>Temperton, Clive</bib:author>
+        <bib:title>Self-sorting mixed-radix fast Fourier transforms</bib:title>
+        <bib:journal>Journal of computational physics</bib:journal>
+        <bib:year>1983</bib:year>
+        <!--optional fields-->
+        <bib:volume>52</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages>1–23</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+  </bib:file>
+</document>

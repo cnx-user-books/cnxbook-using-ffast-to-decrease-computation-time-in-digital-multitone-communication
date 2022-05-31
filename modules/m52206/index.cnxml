@@ -1,0 +1,63 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Introduction to FFAST in Digital Multitone Communication</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52206</md:content-id>
+  <md:title>Introduction to FFAST in Digital Multitone Communication</md:title>
+  <md:abstract/>
+  <md:uuid>4345586b-e927-415e-89e6-4fe5b9992bfa</md:uuid>
+</metadata>
+
+<content>
+    <para id="id275659">Digital communication is a pervasive technology that many individuals, corporations, and governments rely upon to share information. Numerous researchers and engineers have focused their efforts on decreasing the time required for digital communication. One of the greatest such advancements is the Fast Fourier Transform (FFT), an algorithm <link target-id="bid0"/> developed by James Cooley and John Tukey in 1965 that reduces the computational complexity of the DFT from <m:math><m:mo>O</m:mo></m:math><m:math><m:mo>(</m:mo><m:msup><m:mi>N</m:mi><m:mn>2</m:mn></m:msup><m:mo>)</m:mo></m:math> to <m:math><m:mo>O</m:mo></m:math><m:math><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>log</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:math> for appropriately chosen <m:math overflow="scroll"><m:mi>N</m:mi></m:math>, where <m:math overflow="scroll"><m:mi>N</m:mi></m:math> is the signal length.</para><para id="id276068">For many years, <m:math><m:mo>O</m:mo></m:math><m:math><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>log</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:math> was believed to be the best achievable run-time complexity for computing a discrete time Fourier transform (DFT). However, in recent years, researchers have developed a class of algorithms known as Sparse FFT algorithms <link target-id="bid2"/> which run in sublinear time with respect to <m:math overflow="scroll"><m:mi>N</m:mi></m:math>. These algorithms are able to have such a low run time complexity because they assume that the signal is <emphasis effect="italics">sparse</emphasis> in its Fourier representation; that is, there are <m:math overflow="scroll"><m:mi>k</m:mi></m:math> nonzero DFT coefficients where <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>.
+</para><para id="id276137">In this report, we present one such Sparse FFT algorithm, the Fast Fourier Aliasing-based Sparse Transform (FFAST)<link target-id="bid2"/>, as a method to significantly decrease computation time in a digital multitone (DMT) communication scheme because it can operate in <m:math><m:mo>O</m:mo></m:math><m:math><m:mo>(</m:mo><m:mi>k</m:mi><m:mo>log</m:mo><m:mi>k</m:mi><m:mo>)</m:mo></m:math>.  In Module 2, we present the DMT scheme and demonstrate signal sparsity. In Module 3, we outline the architecture of FFAST. In Module 4, we highlight several FFT methods used in our project. We describe our computational experiment and provide numerical results in Module 5 and discuss practical considerations and other future work in Module 6.</para></content>
+  <bib:file>
+    <bib:entry id="bid0">
+      <bib:article>
+        <!--required fields-->
+        <bib:author>Cooley, James W and Tukey, John W</bib:author>
+        <bib:title>An algorithm for the machine calculation of complex Fourier series</bib:title>
+        <bib:journal>Mathematics of computation</bib:journal>
+        <bib:year>1965</bib:year>
+        <!--optional fields-->
+        <bib:volume>19</bib:volume>
+        <bib:number>90</bib:number>
+        <bib:pages>297–301</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:phdthesis>
+        <!--required fields-->
+        <bib:author>Pawar, Sameer</bib:author>
+        <bib:title>PULSE: Peeling-based Ultra-Low complexity algorithms for Sparse signal Estimation</bib:title>
+        <bib:school>EECS Department, University of California, Berkeley</bib:school>
+        <bib:year>2013</bib:year>
+        <!--optional fields-->
+        <bib:type>Ph. D. Thesis</bib:type>
+        <bib:address/>
+        <bib:month>Dec</bib:month>
+        <bib:note/>
+      </bib:phdthesis>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:inproceedings>
+        <!--required fields-->
+        <bib:author>Zhang, Qiwei and Kokkeler, Andre BJ and Smit, Gerard JM</bib:author>
+        <bib:title>An efficient multi-resolution spectrum sensing method for cognitive radio</bib:title>
+        <bib:booktitle>Communications and Networking in China, 2008. ChinaCom 2008. Third International Conference on</bib:booktitle>
+        <bib:year>2008</bib:year>
+        <!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages>1226–1229</bib:pages>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization>IEEE</bib:organization>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+  </bib:file>
+</document>

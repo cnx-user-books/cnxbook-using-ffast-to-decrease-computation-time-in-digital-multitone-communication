@@ -1,0 +1,66 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Discussion and Future Work</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52239</md:content-id>
+  <md:title>Discussion and Future Work</md:title>
+  <md:abstract/>
+  <md:uuid>c312031c-4aa6-4b7e-a1c4-48c2503d966d</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>Discussion and Future Work</title>
+      <para id="id340319">In any digital communication scheme there exist design parameters that are independent of the scheme itself: digital sampling rate and system baud rate. These parameters directly determine the values of <m:math overflow="scroll"><m:mi>N</m:mi></m:math> and <m:math overflow="scroll"><m:mi>B</m:mi></m:math> in the DMT communication scheme. It is therefore plausible to have many different values of <m:math overflow="scroll"><m:mi>N</m:mi></m:math> and <m:math overflow="scroll"><m:mi>B</m:mi></m:math>.</para>
+      <para id="id340696">From the results, the FFAST algorithm outperformed the mixed-radix FFT for all signals with lengths greater than <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mn>14</m:mn></m:msup></m:math>, with the additional condition that <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi><m:mo>&lt;</m:mo><m:msup><m:mi>N</m:mi><m:mfrac><m:mn>1</m:mn><m:mn>3</m:mn></m:mfrac></m:msup></m:mrow></m:math>. Thus, if a communication scheme takes at least <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mn>14</m:mn></m:msup></m:math> samples in the time it takes to send
+<m:math overflow="scroll"><m:mrow><m:mi>B</m:mi><m:mo>=</m:mo><m:mo>⌊</m:mo><m:mfrac><m:mn>1</m:mn><m:mn>2</m:mn></m:mfrac><m:msup><m:mn>2</m:mn><m:mfenced separators="" open="(" close=")"><m:mn>14</m:mn><m:mo>×</m:mo><m:mfrac><m:mn>1</m:mn><m:mn>3</m:mn></m:mfrac></m:mfenced></m:msup><m:mo>⌋</m:mo><m:mo>=</m:mo><m:mn>12</m:mn></m:mrow></m:math>
+simultaneous bits, a sparse FFT will require fewer computations than the tested existing frequency domain schemes, reducing receiver bottlenecking, and will therefore be practical to use with some system designs.</para>
+      <para id="id340803">Ultimately, the best way to address the viability of the sparse FFT (and therefore expand on the goals of this paper) is to physically implement a communications system compatible with the algorithm itself. While this paper has attempted to address concerns about the possibility of implementation there are still further matters to consider before a physical interpretation of this algorithm can arise.</para>
+      <para id="id340810">The first and foremost matter to consider is that the version of the FFAST algorithm that we implemented only works when the signal is exactly sparse. Practically, the communications scheme would have to work with a noisy channel. A noisy version of the FFAST algorithm does exist <link target-id="bid0"/>, however, and should be tested to verify our results in a noisy case.</para>
+      <para id="id340821">Second, it would be useful to devise a more efficient communication scheme that takes into consideration the fact that the sparse FFT converges even though it does not“know” where the signal is not sparse. In our experiment, we allotted the first <m:math overflow="scroll"><m:mi>B</m:mi></m:math> “slots” of the frequency domain of our signal to the sinusoids, a way to guarantee that the frequency sparsity of our signal would not exceed <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi></m:mrow></m:math>. This does not take into consideration that for any given <m:math overflow="scroll"><m:mi>N</m:mi></m:math> there are</para>
+      <equation id="id340858">
+        <m:math overflow="scroll" mode="display">
+          <m:mrow>
+            <m:mfenced separators="" open="(" close=")">
+              <m:mfrac linethickness="0pt">
+                <m:mfrac>
+                  <m:mi>N</m:mi>
+                  <m:mn>2</m:mn>
+                </m:mfrac>
+                <m:mi>B</m:mi>
+              </m:mfrac>
+            </m:mfenced>
+            <m:mo>&gt;</m:mo>
+            <m:mo>&gt;</m:mo>
+            <m:msup>
+              <m:mn>2</m:mn>
+              <m:mi>B</m:mi>
+            </m:msup>
+          </m:mrow>
+        </m:math>
+      </equation>
+      <para id="id340898">different ways to have a sparse signal of density <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi></m:mrow></m:math>. Finding a coherent way of organizing these different possibilities and using them will give transmitted signals a much higher density and also allow for a higher baud rate of the system (in the example above, <m:math overflow="scroll"><m:mi>B</m:mi></m:math> would be increased from 12 bits to 127 simultaneous bits!).</para>
+      <para id="id340926">Ultimately, once these considerations are taken into account, a coherent sparse communication system seems much more plausible.</para>
+    </section>
+  </content>
+  <bib:file>
+    <bib:entry id="bid0">
+      <bib:inproceedings>
+        <!--required fields-->
+        <bib:author>Zhang, Qiwei and Kokkeler, Andre BJ and Smit, Gerard JM</bib:author>
+        <bib:title>An efficient multi-resolution spectrum sensing method for cognitive radio</bib:title>
+        <bib:booktitle>Communications and Networking in China, 2008. ChinaCom 2008. Third International Conference on</bib:booktitle>
+        <bib:year>2008</bib:year>
+        <!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages>1226–1229</bib:pages>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization>IEEE</bib:organization>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+  </bib:file>
+</document>
