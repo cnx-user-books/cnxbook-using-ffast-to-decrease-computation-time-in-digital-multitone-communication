@@ -1,59 +1,20 @@
-<col:collection xmlns="http://cnx.rice.edu/collxml" xmlns:col="http://cnx.rice.edu/collxml" xml:lang="en">
+<?xml version="1.0"?>
+<col:collection xmlns="http://cnx.rice.edu/collxml" xmlns:col="http://cnx.rice.edu/collxml" xml:lang="en" authors="Christopher Harshaw">
   <metadata xmlns:md="http://cnx.rice.edu/mdml" mdml-version="0.5">
-  <md:content-id>col11731</md:content-id>
-  <md:title>Using FFAST to Decrease Computation Time in Digital Multitone Communication</md:title>
-  
-  
-  <md:license url="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License 4.0</md:license>
-  <md:language>en</md:language>
-
-  
-
-  
-  
-  
-  
-  
-
-  <md:uuid>fed6f1fa-3962-4816-8434-e34f6bcfb69a</md:uuid>
-<md:slug>using-ffast-to-decrease-computation-time-in-digital-multitone-communication</md:slug>
-</metadata>
-
+    <md:content-id>col11731</md:content-id>
+    <md:title>Using FFAST to Decrease Computation Time in Digital Multitone Communication</md:title>
+    <md:license url="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License 4.0</md:license>
+    <md:language>en</md:language>
+    <md:uuid>fed6f1fa-3962-4816-8434-e34f6bcfb69a</md:uuid>
+    <md:slug>using-ffast-to-decrease-computation-time-in-digital-multitone-communication</md:slug>
+  </metadata>
   <col:content>
-    
-      <col:module document="m52206"/>
-        
-      
-    
-    
-      <col:module document="m52214"/>
-        
-      
-    
-    
-      <col:module document="m52216"/>
-        
-      
-    
-    
-      <col:module document="m52235"/>
-        
-      
-    
-    
-      <col:module document="m52237"/>
-        
-      
-    
-    
-      <col:module document="m52239"/>
-        
-      
-    
-    
-      <col:module document="m52197"/>
-        
-      
-    
+    <col:module document="m52206"/>
+    <col:module document="m52214"/>
+    <col:module document="m52216"/>
+    <col:module document="m52235"/>
+    <col:module document="m52237"/>
+    <col:module document="m52239"/>
+    <col:module document="m52197"/>
   </col:content>
 </col:collection>
